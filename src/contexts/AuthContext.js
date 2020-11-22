@@ -7,6 +7,7 @@ const AuthContext = React.createContext();
 
 export function Provider(props) {
   const [auth, setAuth] = useState({ isAuth: null, user: null });
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const isLogin = getCookie("auth");
@@ -49,7 +50,7 @@ export function Provider(props) {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, signIn, refreshToken }}>
+    <AuthContext.Provider value={{ auth, signIn, refreshToken, notifications }}>
       {props.children}
     </AuthContext.Provider>
   );

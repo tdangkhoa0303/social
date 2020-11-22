@@ -1,26 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useHistory } from "react-router";
 
 import {
   Grid,
   TextField,
   Button,
+  Box,
   Typography,
   Container,
   Stepper,
   Step,
   StepLabel,
+  Avatar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { deepOrange } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     height: "100vh",
     overflow: "hidden",
-    padding: "2rem 0",
-    flexDirection: "column",
+    paddingTop: "8rem",
   },
 
   field: {
@@ -29,7 +29,9 @@ const useStyles = makeStyles((theme) => ({
 
   form: {
     maxWidth: "40rem",
-    width: "80%",
+    [theme.breakpoints.up("md")]: {
+      width: "80%",
+    },
   },
   img: {
     width: "10rem",
@@ -41,10 +43,35 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "red",
     heigh: "2rem",
   },
+
+  stepper: {
+    padding: "2rem 0",
+    maxWidth: "40rem",
+    width: "80%",
+  },
+
+  action: {
+    margin: "1rem 0",
+  },
+
+  avatar: {
+    color: theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
+    margin: "2rem 0",
+    width: "10rem",
+    height: "10rem",
+
+    "& > img": {
+      width: "100%",
+      height: "unset",
+    },
+  },
 }));
 
 function SignUp() {
+  const history = useHistory();
   const passwordRef = useRef();
+  const [activeStep, setActiveStep] = useState(0);
 
   const [fields, setFields] = useState({
     firstName: {
@@ -66,6 +93,15 @@ function SignUp() {
       spacing: { xs: 12, md: 6 },
       type: "text",
     },
+
+    nickName: {
+      label: "Nickname",
+      name: "nickName",
+      value: "",
+      validated: true,
+      default: "",
+      spacing: { xs: 12 },
+    },
     email: {
       label: "Email",
       name: "email",
@@ -83,7 +119,7 @@ function SignUp() {
       validated: true,
       default: "",
       type: "password",
-      spacing: { xs: 12 },
+      spacing: { xs: 12, md: 6 },
     },
     confirmPassword: {
       label: "Confirm password",
@@ -92,8 +128,16 @@ function SignUp() {
       validated: true,
       default: "",
       type: "password",
-      spacing: { xs: 12 },
+      spacing: { xs: 12, md: 6 },
       validator: (value) => value === passwordRef.current,
+    },
+    bio: {
+      label: "Bio",
+      name: "bio",
+      value: "",
+      validated: true,
+      default: "",
+      spacing: { xs: 12 },
     },
   });
 
@@ -101,13 +145,12 @@ function SignUp() {
     passwordRef.current = fields.password.value;
   }, [fields.password.value]);
 
-  const [previews, setPreviews] = useState([]);
+  const [avatar, setAvatar] = useState(null);
 
   const handleFormSubmission = (event) => {};
 
   const handleAvatarChange = (event) => {
-    const files = Array.from(event.target.files);
-    setPreviews(files.map((file) => URL.createObjectURL(file)));
+    setAvatar(event.target.files[0]);
   };
 
   const handleFieldChange = (event, field) => {
@@ -118,6 +161,64 @@ function SignUp() {
       ...fields,
       [field.name]: { ...field, validated, value },
     }));
+  };
+
+  const getActiveContent = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          <form className={classes.form} onSubmit={handleFormSubmission}>
+            <Grid container spacing={3}>
+              {Object.values(fields).map((field, index) => (
+                <Grid item {...field.spacing} key={index}>
+                  <TextField
+                    variant="outlined"
+                    label={field.label}
+                    id={field.name}
+                    name={field.name}
+                    className={classes.field}
+                    value={field.value}
+                    error={!field.validated}
+                    type={field.type}
+                    onChange={(e) => handleFieldChange(e, field)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </form>
+        );
+      case 1:
+        return (
+          <Box>
+            <Typography paragraph>Choose your avatar</Typography>
+            <label htmlFor="avatar" className={classes.uploader}>
+              <Avatar
+                className={classes.avatar}
+                alt="avatar"
+                src={avatar && URL.createObjectURL(avatar)}
+              >
+                {fields.firstName ? fields.firstName.value[0] : "K"}
+              </Avatar>
+            </label>
+            <input
+              type="file"
+              id="avatar"
+              name="avatar"
+              onChange={handleAvatarChange}
+              hidden
+            />
+          </Box>
+        );
+      default:
+        return;
+    }
+  };
+
+  const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
+  const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
+  const handleSignUp = () => {
+    console.log("Sign Up");
+    history.push("/signIn");
   };
 
   const classes = useStyles();
@@ -142,66 +243,56 @@ function SignUp() {
 
   return (
     <Container className={classes.root}>
-      <form className={classes.form} onSubmit={handleFormSubmission}>
-        <Stepper activeStep={0}>
-          {steps.map((step, index) => {
-            const stepProps = {};
-            const labelProps = {};
-            if (step.isOptional) {
-              labelProps.optional = (
-                <Typography variant="caption">Optional</Typography>
-              );
-            }
-            if (step.isSkip) {
-              stepProps.completed = false;
-            }
-            return (
-              <Step key={index} {...stepProps}>
-                <StepLabel {...labelProps}>{step.label}</StepLabel>
-              </Step>
+      <Typography variant="h4" paragraph color="primary">
+        Join our community to connect new friend and share your stories...
+      </Typography>
+      <Stepper activeStep={activeStep} className={classes.stepper}>
+        {steps.map((step, index) => {
+          const stepProps = {};
+          const labelProps = {};
+          if (step.isOptional) {
+            labelProps.optional = (
+              <Typography variant="caption">Optional</Typography>
             );
-          })}
-        </Stepper>
-        <Typography variant="h4" paragraph color="primary">
-          Join our community to connect new friend and share your stories...
-        </Typography>
-        <Grid container spacing={3}>
-          {Object.values(fields).map((field, index) => (
-            <Grid item {...field.spacing} key={index}>
-              <TextField
-                variant="outlined"
-                label={field.label}
-                id={field.name}
-                name={field.name}
-                className={classes.field}
-                value={field.value}
-                error={!field.validated}
-                type={field.type}
-                onChange={(e) => handleFieldChange(e, field)}
-              />
-            </Grid>
-          ))}
-          <Grid item sm={12}>
-            <label htmlFor="avatar" className={classes.uploader}></label>
-            <input
-              type="file"
-              id="avatar"
-              name="avatar"
-              multiple
-              onChange={handleAvatarChange}
-              hidden
-            />
-          </Grid>
-          <Grid item sm={12}>
-            <Button variant="contained" color="primary">
-              Sign Up
+          }
+          if (step.isSkip) {
+            stepProps.completed = false;
+          }
+          return (
+            <Step key={index} {...stepProps}>
+              <StepLabel {...labelProps}>{step.label}</StepLabel>
+            </Step>
+          );
+        })}
+      </Stepper>
+      <Box spacing={3}>
+        {activeStep === steps.length - 1 ? (
+          <Box className={classes.action}>
+            <Typography className={classes.instructions}>
+              We prepared all the things for you!
+            </Typography>
+            <Button variant="contained" color="primary" onClick={handleSignUp}>
+              Let's start
             </Button>
-          </Grid>
-        </Grid>
-        {previews.map((img, i) => (
-          <img src={img} key={i} alt="dfdsf" className={classes.img} />
-        ))}
-      </form>
+          </Box>
+        ) : (
+          <Box>
+            {getActiveContent(activeStep)}
+            <Box className={classes.action}>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                className={classes.backButton}
+              >
+                Back
+              </Button>
+              <Button variant="contained" color="primary" onClick={handleNext}>
+                {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </Box>
     </Container>
   );
 }

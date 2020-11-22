@@ -32,7 +32,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "stretch",
     maxWidth: "30rem",
-    width: "80%",
+
+    [theme.breakpoints.up("md")]: {
+      width: "80%",
+    },
   },
 
   field: { width: "100%" },

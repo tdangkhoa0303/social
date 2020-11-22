@@ -1,15 +1,7 @@
-import React, { useContext, Fragment } from "react";
-
-import { Redirect } from "react-router-dom";
-import AuthContext from "../contexts/AuthContext";
-
+import React, { Fragment } from "react";
 import { PublicAppBar } from "../components/AppBar";
 
 function PrivateRoute({ Component }) {
-  const {
-    auth: { isAuth },
-  } = useContext(AuthContext);
-
   return (
     <Fragment>
       <PublicAppBar />

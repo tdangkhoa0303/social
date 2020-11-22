@@ -12,15 +12,15 @@ function PrivateRoute({ Component }) {
 
   return (
     <Fragment>
-      {isAuth !== null &&
-        (isAuth ? (
-          <Fragment>
-            <PrivateAppBar />
-            <Component />
-          </Fragment>
-        ) : (
+      {/* {isAuth !== null &&
+        (isAuth ? ( */}
+      <Fragment>
+        <PrivateAppBar />
+        <Component />
+      </Fragment>
+      {/* ) : (
           <Redirect to="/signIn" />
-        ))}
+        ))} */}
     </Fragment>
   );
 }
