@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import clsx from "clsx";
 import SwipeableViews from "react-swipeable-views";
 
@@ -7,13 +7,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root: (props) => ({
     position: "relative",
     marginTop: "10rem",
     backgroundColor: "wheat",
-    height: "30rem",
-    width: "30rem",
-  },
+    width: "100%",
+    height: props.size,
+  }),
 
   controller: {
     position: "absolute",
@@ -32,6 +32,11 @@ const useStyles = makeStyles((theme) => ({
     transform: "translateY(-50%)",
     outline: "none",
     left: "1rem",
+    zIndex: 5,
+
+    "&:disabled": {
+      display: "none",
+    },
   },
 
   right: {
@@ -70,10 +75,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Carousel({ images = [] }) {
+function Carousel({ images = [], size = "30rem" }) {
+  useEffect(() => setActive(0), [images]);
+
   const [active, setActive] = useState(0);
 
-  const classes = useStyles();
+  const classes = useStyles({ size });
 
   const handleUp = () =>
     setActive((prev) => (prev + 1 === images.length ? 0 : prev + 1));
@@ -104,6 +111,7 @@ function Carousel({ images = [] }) {
             className={classes.controller}
             size="small"
             onClick={handleDown}
+            disabled={active === 0}
           >
             <KeyboardArrowLeft />
           </button>
@@ -111,6 +119,7 @@ function Carousel({ images = [] }) {
             className={clsx(classes.controller, classes.right)}
             size="small"
             onClick={handleUp}
+            disabled={active === images.length - 1}
           >
             <KeyboardArrowRight />
           </button>
