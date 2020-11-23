@@ -5,19 +5,30 @@ import AuthContext from "../contexts/AuthContext";
 
 import { PrivateAppBar } from "../components/AppBar";
 
+import { Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    paddingTop: "80px",
+  },
+}));
+
 function PrivateRoute({ Component }) {
   const {
     auth: { isAuth },
   } = useContext(AuthContext);
 
+  const classes = useStyles();
+
   return (
     <Fragment>
       {/* {isAuth !== null &&
         (isAuth ? ( */}
-      <Fragment>
+      <Box className={classes.root}>
         <PrivateAppBar />
         <Component />
-      </Fragment>
+      </Box>
       {/* ) : (
           <Redirect to="/signIn" />
         ))} */}

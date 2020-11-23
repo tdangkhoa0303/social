@@ -1,29 +1,47 @@
 import { useState } from "react";
-import { Container, Grid, TextField, Box, Typography } from "@material-ui/core";
+import {
+  Container,
+  Grid,
+  TextareaAutosize,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { AddCircleOutline } from "@material-ui/icons";
-
-import { Casourel } from "../components";
+import { Photo } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
 
   preview: {
-    position: "relative",
-    width: "fit-content",
+    display: "flex",
   },
 
-  uploader: {
-    position: "absolute",
-    top: 0,
-    left: 0,
+  caption: {
     width: "100%",
-    height: "100%",
+    border: "none",
+    outline: "none",
+    fontFamily: "Roboto, san-serif",
+    fontSize: "1rem",
+  },
+
+  imageWrapper: {
+    width: "8rem",
+    height: "8rem",
+    margin: "1rem 1rem 1rem 0",
     display: "flex",
-    justifyContent: "center",
+    overflow: "hidden",
     alignItems: "center",
-    color: "#ffffff",
-    fontSize: "3rem",
+    justifyContent: "center",
+  },
+
+  image: { width: "100%" },
+
+  action: {
+    display: "flex",
+    alignItems: "center",
   },
 }));
 
@@ -41,20 +59,50 @@ function CreatePost() {
 
   return (
     <Container className={classes.root}>
-      <Box className={classes.preview}>
-        <Casourel images={images} />
-        <label htmlFor="images" className={classes.uploader}>
-          {!images.length && <AddCircleOutline fontSize="large" />}
-        </label>
-        <input
-          multiple
-          type="file"
-          onChange={handleImagesChange}
-          id="images"
-          name="images"
-          hidden
-        />
-      </Box>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <TextareaAutosize
+                aria-label="Share your thinking...."
+                rowsMin={2}
+                placeholder="Are you ok?"
+                className={classes.caption}
+              />
+              <Box className={classes.preview}>
+                {images.map((e, i) => (
+                  <figure className={classes.imageWrapper}>
+                    <img
+                      src={e.src}
+                      alt="img-preview"
+                      className={classes.image}
+                    />
+                  </figure>
+                ))}
+              </Box>
+            </CardContent>
+
+            <CardActions className={classes.action}>
+              <Button size="small" color="primary">
+                Share
+              </Button>
+              <Box>
+                <label htmlFor="images">
+                  <Photo />
+                </label>
+                <input
+                  multiple
+                  type="file"
+                  onChange={handleImagesChange}
+                  id="images"
+                  name="images"
+                  hidden
+                />
+              </Box>
+            </CardActions>
+          </Card>
+        </Grid>
+      </Grid>
     </Container>
   );
 }

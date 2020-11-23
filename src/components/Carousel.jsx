@@ -7,13 +7,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-  root: (props) => ({
+  root: {
     position: "relative",
-    marginTop: "10rem",
     backgroundColor: "wheat",
     width: "100%",
-    height: props.size,
-  }),
+    paddingTop: "100%",
+  },
 
   controller: {
     position: "absolute",
@@ -68,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
 
   swipeableView: {
     height: "100%",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
 
     "& > div": {
       height: "inherit",
@@ -75,12 +78,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Carousel({ images = [], size = "30rem" }) {
+function Carousel({ images = [] }) {
   useEffect(() => setActive(0), [images]);
 
   const [active, setActive] = useState(0);
 
-  const classes = useStyles({ size });
+  const classes = useStyles();
 
   const handleUp = () =>
     setActive((prev) => (prev + 1 === images.length ? 0 : prev + 1));
