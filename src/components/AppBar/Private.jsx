@@ -1,21 +1,26 @@
+import { useContext } from "react";
 import {
   AppBar,
   Toolbar,
   IconButton,
   Typography,
-  Button,
   Box,
   InputBase,
   Badge,
+  Avatar,
+  Container,
 } from "@material-ui/core";
+
+import { Link } from "react-router-dom";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import { Notifications, Search } from "@material-ui/icons";
+
+import Context from "../../Context";
 
 import Logo from "../../assets/logo.svg";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: "none",
     boxShadow: "none",
   },
   logo: { height: "2.5rem" },
@@ -46,6 +51,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
+  searchContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  },
+
   searchInput: {
     padding: theme.spacing(1, 1, 1, 0),
     color: "inherit",
@@ -53,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
-      width: "20em",
+      width: theme.spacing(60),
     },
   },
 
@@ -66,28 +78,40 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
+
+  avatar: {
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 function Private() {
+  const {
+    auth: { user },
+  } = useContext(Context);
+
   const classes = useStyles();
+
   return (
     <AppBar className={classes.appBar}>
       <Toolbar>
         <IconButton edge="start" aria-label="logo">
-          <img src={Logo} alt="logo" className={classes.logo} />
+          <Link to="/">
+            <img src={Logo} alt="logo" className={classes.logo} />
+          </Link>
         </IconButton>
         <Typography variant="h4" className={classes.title}>
           Instee
         </Typography>
-        <Box className={classes.search}>
-          <Box className={classes.searchIcon}>
-            <Search />
+        <Box className={classes.searchContainer}>
+          <Box className={classes.search}>
+            <Search className={classes.searchIcon} />
+
+            <InputBase
+              placeholder="Search…"
+              className={classes.searchInput}
+              inputProps={{ "aria-label": "search" }}
+            />
           </Box>
-          <InputBase
-            placeholder="Search…"
-            className={classes.searchInput}
-            inputProps={{ "aria-label": "search" }}
-          />
         </Box>
         <div className={classes.grow}></div>
         <IconButton aria-label="show 4 new mails" color="inherit">
@@ -95,6 +119,7 @@ function Private() {
             <Notifications />
           </Badge>
         </IconButton>
+        <Avatar src={user && user.avatar.url} className={classes.avatar} />
       </Toolbar>
     </AppBar>
   );

@@ -13,9 +13,23 @@ const api = axios.create({
 export const setToken = (token) =>
   (api.defaults.headers.common["x-access-token"] = token);
 
-export const requestSignUp = (data) => api.post("/auth/signUp", { data });
+export const requestSignUp = (data) =>
+  api.post("/auth/signUp", data, {
+    headers: { "Content-type": "multipart/form-data" },
+  });
 
+export const addComment = (postId, comment) =>
+  api.post("/social", { postId, comment });
+
+export const reactPost = (postId) => api.get(`/post/react?post=${postId}`);
+
+export const createPost = (data) =>
+  api.post("/post/", data, {
+    headers: { "Content-type": "multipart/form-data" },
+  });
 export const requestLogin = (email, password) =>
   api.post("/auth/login", { email, password });
 
 export const requestTokenRefresh = () => api.post("/auth/refreshToken");
+
+export const getPosts = (page = 1) => api.get("/post");

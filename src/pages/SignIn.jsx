@@ -1,18 +1,9 @@
-import React, { useState } from "react";
-import {
-  Grid,
-  TextField,
-  Button,
-  Typography,
-  AppBar,
-  Box,
-  IconButton,
-  Toolbar,
-} from "@material-ui/core";
+import React, { useState, useContext } from "react";
+import { Grid, TextField, Button, Typography, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Context from "../Context";
 
 import Background from "../assets/social_bg.svg";
-import Logo from "../assets/logo.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: { width: "100%", overflow: "hidden", height: "100vh" },
@@ -53,10 +44,17 @@ function SignIn() {
     validator: (value) => value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g),
   });
 
+  const { signIn } = useContext(Context);
+
   const [password, setPassword] = useState({
     value: "",
     validated: true,
   });
+
+  const handleSubmitForm = (event) => {
+    event.preventDefault();
+    signIn(email.value, password.value);
+  };
 
   const classes = useStyles();
 
@@ -67,7 +65,11 @@ function SignIn() {
           <img src={Background} alt="social" className={classes.hero} />
         </Grid>
         <Grid item xs={12} md={6} className={classes.section}>
-          <form autoComplete="off" className={classes.form}>
+          <form
+            autoComplete="off"
+            className={classes.form}
+            onSubmit={handleSubmitForm}
+          >
             <Typography variant="h4" paragraph color="primary">
               Sign in to share your stories to our community...
             </Typography>
@@ -102,7 +104,7 @@ function SignIn() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Button variant="contained" color="primary">
+                <Button variant="contained" color="primary" type="submit">
                   Sign In
                 </Button>
               </Grid>

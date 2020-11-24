@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useHistory } from "react-router";
+import * as api from "../helpers/api";
 
 import {
   Grid,
@@ -18,7 +19,7 @@ import { deepOrange } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
+    minHeight: "100vh",
     overflow: "hidden",
     paddingTop: "8rem",
   },
@@ -72,6 +73,7 @@ function SignUp() {
   const history = useHistory();
   const passwordRef = useRef();
   const [activeStep, setActiveStep] = useState(0);
+  const [error, setError] = useState("");
 
   const [fields, setFields] = useState({
     firstName: {
@@ -147,8 +149,6 @@ function SignUp() {
 
   const [avatar, setAvatar] = useState(null);
 
-  const handleFormSubmission = (event) => {};
-
   const handleAvatarChange = (event) => {
     setAvatar(event.target.files[0]);
   };
@@ -167,7 +167,7 @@ function SignUp() {
     switch (step) {
       case 0:
         return (
-          <form className={classes.form} onSubmit={handleFormSubmission}>
+          <form className={classes.form}>
             <Grid container spacing={3}>
               {Object.values(fields).map((field, index) => (
                 <Grid item {...field.spacing} key={index}>
@@ -209,17 +209,44 @@ function SignUp() {
             />
           </Box>
         );
+      case 3:
+        return (
+          <Typography className={classes.instructions}>
+            We prepared all the things for you!
+          </Typography>
+        );
       default:
         return;
     }
   };
 
-  const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
-  const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
-  const handleSignUp = () => {
-    console.log("Sign Up");
-    history.push("/signIn");
+  const handleSignUp = async () => {
+    try {
+      const form = new FormData();
+
+      Object.values(fields).forEach((field) =>
+        form.append(field.name, field.value)
+      );
+      form.append("avatar", avatar);
+
+      const {
+        data: { data: response },
+      } = await api.requestSignUp(form);
+      console.log(response);
+      if (response.success === "success") history.push("/signIn");
+    } catch (err) {
+      setError(err.message);
+    }
   };
+
+  const handleNext = () => {
+    if (activeStep === steps.length - 1) {
+      handleSignUp();
+      return;
+    }
+    setActiveStep((prevStep) => prevStep + 1);
+  };
+  const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
   const classes = useStyles();
 
@@ -246,6 +273,7 @@ function SignUp() {
       <Typography variant="h4" paragraph color="primary">
         Join our community to connect new friend and share your stories...
       </Typography>
+
       <Stepper activeStep={activeStep} className={classes.stepper}>
         {steps.map((step, index) => {
           const stepProps = {};
@@ -266,32 +294,31 @@ function SignUp() {
         })}
       </Stepper>
       <Box spacing={3}>
-        {activeStep === steps.length - 1 ? (
+        <Box>
+          {getActiveContent(activeStep)}
           <Box className={classes.action}>
-            <Typography className={classes.instructions}>
-              We prepared all the things for you!
-            </Typography>
-            <Button variant="contained" color="primary" onClick={handleSignUp}>
-              Let's start
+            <Button
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              className={classes.backButton}
+            >
+              Back
             </Button>
-          </Box>
-        ) : (
-          <Box>
-            {getActiveContent(activeStep)}
-            <Box className={classes.action}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.backButton}
-              >
-                Back
-              </Button>
+            {activeStep < steps.length - 1 ? (
               <Button variant="contained" color="primary" onClick={handleNext}>
                 {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </Button>
-            </Box>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSignUp}
+              >
+                Let's start
+              </Button>
+            )}
           </Box>
-        )}
+        </Box>
       </Box>
     </Container>
   );

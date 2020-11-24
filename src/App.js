@@ -6,9 +6,9 @@ import {
 } from "react-router-dom";
 
 import { PrivateRoute, PublicRoute } from "./templates";
-import { SignIn, CreatePost, SignUp } from "./pages";
+import { SignIn, Home, SignUp } from "./pages";
 
-import { Provider } from "./contexts/AuthContext";
+import { Provider } from "./Context";
 
 function App() {
   return (
@@ -28,8 +28,8 @@ function App() {
             />
             <Route
               exact
-              path="/create"
-              component={() => <PrivateRoute Component={CreatePost} />}
+              path="/"
+              component={() => <PrivateRoute Component={Home} />}
             />
             <Redirect to="signIn" />
           </Switch>

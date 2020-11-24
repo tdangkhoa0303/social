@@ -1,7 +1,7 @@
 import React, { useContext, Fragment } from "react";
 
 import { Redirect } from "react-router-dom";
-import AuthContext from "../contexts/AuthContext";
+import Context from "../Context";
 
 import { PrivateAppBar } from "../components/AppBar";
 
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 function PrivateRoute({ Component }) {
   const {
     auth: { isAuth },
-  } = useContext(AuthContext);
+  } = useContext(Context);
 
   const classes = useStyles();
 

@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
   image: {
     height: "100%",
+    width: "auto",
   },
 
   swipeableView: {
@@ -101,7 +102,7 @@ function Carousel({ images = [] }) {
         {images.map((image, i) => (
           <figure key={i} className={classes.imageContainer}>
             <img
-              src={image.src}
+              src={image.src || image.url}
               alt={image.alt || "image in carousel"}
               className={classes.image}
             />
