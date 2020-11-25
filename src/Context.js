@@ -60,7 +60,6 @@ export function Provider(props) {
       const {
         data: { data },
       } = await api.getPosts(page);
-      console.log(arrayToMap(data.posts));
       setPosts((posts) => ({
         fetching: false,
         data: {
@@ -92,23 +91,27 @@ export function Provider(props) {
   };
 
   const reactPost = async (postId) => {
-    setPosts((posts) => {
-      let post = posts.data[postId];
+    try {
+      setPosts((posts) => {
+        let post = posts.data[postId];
 
-      if (!post.likes.includes(auth.user._id)) {
-        post.likes.push(auth.user._id);
-      } else {
-        post.likes = Array.from(new Set(post.likes).delete(auth.user._id));
-      }
-      return {
-        ...posts,
-        data: {
-          ...posts.data,
-          [postId]: post,
-        },
-      };
-    });
-    await api.reactPost(postId);
+        if (!post.likes.includes(auth.user._id)) {
+          post.likes.push(auth.user._id);
+        } else {
+          post.likes = Array.from(new Set(post.likes).delete(auth.user._id));
+        }
+        return {
+          ...posts,
+          data: {
+            ...posts.data,
+            [postId]: post,
+          },
+        };
+      });
+      await api.reactPost(postId);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const addComment = (postId, content) => {
@@ -140,6 +143,29 @@ export function Provider(props) {
     }
   };
 
+  const toggleNotification = async (id, status) => {
+    try {
+      setNotifications((notifications) => {
+        const index = notifications.findIndex((e) => e._id === id);
+
+        if (index < 0) return notifications;
+
+        let notification = notifications[index];
+        return [
+          ...notifications.slice(0, index),
+          {
+            ...notification,
+            status: status !== undefined ? status : !notification.status,
+          },
+          ...notifications.slice(index + 1),
+        ];
+      });
+      await api.toggleNotificationStatus(id, status);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Context.Provider
       value={{
@@ -151,6 +177,7 @@ export function Provider(props) {
         addComment,
         createPost,
         reactPost,
+        toggleNotification,
         posts,
       }}
     >

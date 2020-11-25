@@ -21,6 +21,9 @@ export const requestSignUp = (data) =>
 export const addComment = (postId, comment) =>
   api.post("/social", { postId, comment });
 
+export const toggleNotificationStatus = (id, status) =>
+  api.get(`/social/notification?n=${id}&status=${status}`);
+
 export const reactPost = (postId) => api.get(`/post/react?post=${postId}`);
 
 export const createPost = (data) =>

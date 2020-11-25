@@ -14,6 +14,10 @@ import { Photo } from "@material-ui/icons";
 import Context from "../Context";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    boxShadow: "0px 4px 14px rgba(50, 50, 50, 0.1)",
+  },
+
   preview: {
     display: "flex",
   },
@@ -82,7 +86,7 @@ function CreatePost() {
   };
 
   return (
-    <Card>
+    <Card className={classes.root}>
       <CardContent>
         <TextareaAutosize
           aria-label="Share your thinking...."

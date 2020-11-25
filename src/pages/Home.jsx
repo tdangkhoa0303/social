@@ -1,7 +1,12 @@
-import { useContext, useEffect, useState } from "react";
-import { v4 } from "uuid";
+import { useContext, useEffect } from "react";
 
-import { Container, Grid, CircularProgress } from "@material-ui/core";
+import {
+  Container,
+  Grid,
+  CircularProgress,
+  List,
+  ListItem,
+} from "@material-ui/core";
 import { CreatePost } from "../components";
 import { Post } from "../components/Post";
 
@@ -16,29 +21,29 @@ function Home() {
 
   useEffect(() => {
     if (isAuth) getPosts();
+    console.log(posts);
   }, [isAuth]);
 
   return (
-    <Container>
-      <Grid container>
-        <Grid item xs={12} md={8}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <CreatePost />
-            </Grid>
-            {posts.fetching ? (
-              <CircularProgress />
-            ) : (
-              Object.values(posts.data).map((post) => (
-                <Grid item xs={12} key={post._id}>
-                  <Post data={post} />
-                </Grid>
-              ))
-            )}
+    <Grid container justify="center">
+      <Grid item xs={12} md={4}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <CreatePost />
           </Grid>
+
+          {posts.fetching ? (
+            <CircularProgress />
+          ) : (
+            Object.values(posts.data).map((post) => (
+              <Grid item xs={12} key={post._id}>
+                <Post data={post} />
+              </Grid>
+            ))
+          )}
         </Grid>
       </Grid>
-    </Container>
+    </Grid>
   );
 }
 

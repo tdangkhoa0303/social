@@ -23,15 +23,15 @@ function PrivateRoute({ Component }) {
 
   return (
     <Fragment>
-      {/* {isAuth !== null &&
-        (isAuth ? ( */}
-      <Box className={classes.root}>
-        <PrivateAppBar />
-        <Component />
-      </Box>
-      {/* ) : (
+      {isAuth !== null &&
+        (isAuth ? (
+          <Box className={classes.root}>
+            <PrivateAppBar />
+            <Component />
+          </Box>
+        ) : (
           <Redirect to="/signIn" />
-        ))} */}
+        ))}
     </Fragment>
   );
 }

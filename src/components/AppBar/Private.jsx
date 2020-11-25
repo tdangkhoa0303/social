@@ -8,20 +8,23 @@ import {
   InputBase,
   Badge,
   Avatar,
-  Container,
+  MenuItem,
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 import { makeStyles, fade } from "@material-ui/core/styles";
-import { Notifications, Search } from "@material-ui/icons";
+import { Notifications as NotificationsIcon, Search } from "@material-ui/icons";
 
 import Context from "../../Context";
 
 import Logo from "../../assets/logo.svg";
+import { Menu, Notifications } from "../";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    boxShadow: "none",
+    boxShadow: "0px 4px 14px rgba(50,50,50,0.05)",
+    background: "#ffffff",
+    color: "#333333",
   },
   logo: { height: "2.5rem" },
   title: {
@@ -38,9 +41,9 @@ const useStyles = makeStyles((theme) => ({
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: fade(theme.palette.common.black, 0.05),
     "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: fade(theme.palette.common.black, 0.1),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
@@ -56,16 +59,20 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
+
+    [theme.breakpoints.down("md")]: {
+      display: "none",
+    },
   },
 
   searchInput: {
-    padding: theme.spacing(1, 1, 1, 0),
+    padding: theme.spacing(0.5, 1, 0.5, 0),
     color: "inherit",
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
-      width: theme.spacing(60),
+      width: theme.spacing(50),
     },
   },
 
@@ -87,6 +94,7 @@ const useStyles = makeStyles((theme) => ({
 function Private() {
   const {
     auth: { user },
+    notifications,
   } = useContext(Context);
 
   const classes = useStyles();
@@ -105,7 +113,6 @@ function Private() {
         <Box className={classes.searchContainer}>
           <Box className={classes.search}>
             <Search className={classes.searchIcon} />
-
             <InputBase
               placeholder="Search…"
               className={classes.searchInput}
@@ -114,10 +121,22 @@ function Private() {
           </Box>
         </Box>
         <div className={classes.grow}></div>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <Notifications />
-          </Badge>
+        <IconButton aria-label="show new notifications" color="inherit">
+          <Menu
+            trigger={() => (
+              <Badge
+                badgeContent={
+                  notifications &&
+                  notifications.filter((item) => !item.status).length
+                }
+                color="secondary"
+              >
+                <NotificationsIcon />
+              </Badge>
+            )}
+          >
+            <Notifications data={notifications} />
+          </Menu>
         </IconButton>
         <Avatar src={user && user.avatar.url} className={classes.avatar} />
       </Toolbar>

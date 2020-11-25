@@ -24,6 +24,7 @@ import {
   Edit,
   Share,
   Send,
+  Forum,
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -36,8 +37,21 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     flex: 1,
   },
+
+  card: {
+    boxShadow: "0px 4px 14px rgba(50,50,50,0.1)",
+  },
+
   content: {
     paddingBottom: 0,
+  },
+
+  comments: {
+    display: "none",
+
+    [theme.breakpoints.up("md")]: {
+      display: "block",
+    },
   },
 
   react: {
@@ -52,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Post({
-  data: { _id, author, createdAt, images, content, comments, likes = [] },
+  data: { _id, author, createdAt, images, comments, likes = [], caption },
 }) {
   const {
     auth: { user },
@@ -88,7 +102,7 @@ function Post({
   const handleInputComment = (event) => setComment(event.target.value);
 
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardHeader
         avatar={<Avatar aria-label="user avatar" src={author.avatar.url} />}
         title={
@@ -152,23 +166,28 @@ function Post({
               <FavoriteBorder />
             )}
           </IconButton>
-          <IconButton edge="start">
+          <IconButton>
+            <Forum />
+          </IconButton>
+          <IconButton>
             <Send />
           </IconButton>
         </Box>
-        <Comment author="You" content="adsdsa" />
-        {comments.map((comment) => (
-          <Comment
-            key={comment.id || comment._id}
-            author={
-              (user && user._id === comment.author._id) ||
-              user._id === comment.author
-                ? "You"
-                : comment.author.nickName
-            }
-            content={comment.content}
-          />
-        ))}
+        <Comment author={author.nickName} content={caption} />
+        <Box className={classes.comments}>
+          {comments.map((comment) => (
+            <Comment
+              key={comment.id || comment._id}
+              author={
+                (user && user._id === comment.author._id) ||
+                user._id === comment.author
+                  ? "You"
+                  : comment.author.nickName
+              }
+              content={comment.content}
+            />
+          ))}
+        </Box>
       </CardContent>
       <CardActions>
         <InputBase

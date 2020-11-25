@@ -1,12 +1,10 @@
-import { Box, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Typography } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({}));
 function Comment({ author, content }) {
   return (
     <Typography variant="body1" component="p">
       <b>{author}</b>
-      :&nbsp;
+      &nbsp;
       {content}
     </Typography>
   );
