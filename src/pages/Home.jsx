@@ -1,12 +1,6 @@
 import { useContext, useEffect } from "react";
 
-import {
-  Container,
-  Grid,
-  CircularProgress,
-  List,
-  ListItem,
-} from "@material-ui/core";
+import { Grid, CircularProgress } from "@material-ui/core";
 import { CreatePost } from "../components";
 import { Post } from "../components/Post";
 
@@ -21,7 +15,6 @@ function Home() {
 
   useEffect(() => {
     if (isAuth) getPosts();
-    console.log(posts);
   }, [isAuth]);
 
   return (

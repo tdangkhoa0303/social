@@ -8,7 +8,6 @@ import {
   InputBase,
   Badge,
   Avatar,
-  MenuItem,
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
