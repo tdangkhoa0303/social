@@ -8,6 +8,7 @@ import {
   CardActions,
   IconButton,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { Photo } from "@material-ui/icons";
 
@@ -61,6 +62,11 @@ function CreatePost() {
   const [caption, setCaption] = useState();
   const [previews, setPreviews] = useState([]);
 
+  const [feedback, setFeedback] = useState({
+    status: "",
+    message: "",
+  });
+
   useEffect(
     () =>
       images &&
@@ -82,12 +88,26 @@ function CreatePost() {
   };
 
   const handleCreatePost = (event) => {
-    createPost(caption, images);
+    const post = createPost(caption, images);
+    if (!post) {
+      setFeedback((feedback) => ({
+        ...feedback,
+        status: "error",
+        message: "Something went wrong. Let's try again...",
+      }));
+      return;
+    }
+
+    setPreviews([]);
+    setCaption("");
   };
 
   return (
     <Card className={classes.root}>
       <CardContent>
+        {feedback.message && (
+          <Alert severity={feedback.status}>{feedback.message}</Alert>
+        )}
         <TextareaAutosize
           aria-label="Share your thinking...."
           rowsMin={2}

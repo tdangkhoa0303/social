@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import moment from "moment";
 
+import { Link } from "../";
 import {
   Card,
   CardHeader,
@@ -104,10 +105,16 @@ function Post({
   return (
     <Card className={classes.card}>
       <CardHeader
-        avatar={<Avatar aria-label="user avatar" src={author.avatar.url} />}
+        avatar={
+          <Link to={`/profile/${author.nickName || author._id}`}>
+            <Avatar aria-label="user avatar" src={author.avatar.url} />
+          </Link>
+        }
         title={
           <Typography>
-            <b>{author.nickName}</b>
+            <Link to={`/profile/${author.nickName || author._id}`}>
+              <b>{author.nickName}</b>
+            </Link>
           </Typography>
         }
         subheader={`${moment(createdAt).toNow(true)} ago`}

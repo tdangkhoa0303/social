@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     display: "flex",
     alignItems: "center",
-    padding: theme.spacing(2, 2.5, 2, 2.5),
+    padding: theme.spacing(2, 3, 2, 2.5),
 
     cursor: "pointer",
 
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(1),
     position: "absolute",
 
-    right: theme.spacing(1),
+    right: theme.spacing(1.5),
     bottom: theme.spacing(1),
     background: blue[100],
     borderRadius: "50%",
@@ -66,7 +66,7 @@ function Notification({ item: { _id, path, author, status, action }, toggle }) {
           src={author.avatar.url}
           className={classes.avatar}
         />
-        <Typography variant="body1" component="p">
+        <Typography variant="body1" component="p" noWrap>
           <b>{author.nickName || author.fullname}</b>
           &nbsp;
           {action}

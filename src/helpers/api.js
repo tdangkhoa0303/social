@@ -18,6 +18,11 @@ export const requestSignUp = (data) =>
     headers: { "Content-type": "multipart/form-data" },
   });
 
+export const getProfile = (q) => {
+  console.log(q);
+  return api.get(`/user/profile?q=${q}`);
+};
+
 export const addComment = (postId, comment) =>
   api.post("/social", { postId, comment });
 
@@ -36,3 +41,5 @@ export const requestLogin = (email, password) =>
 export const requestTokenRefresh = () => api.post("/auth/refreshToken");
 
 export const getPosts = (page = 1) => api.get("/post");
+
+export const getPost = (id) => api.get(`/post/single?id=${id}`);

@@ -79,15 +79,22 @@ export function Provider(props) {
     form.append("caption", caption);
     for (let i = 0; i < images.length; i++) form.append("images", images[i]);
 
-    const post = await api.createPost(form);
-
-    setPosts((posts) => ({
-      ...posts,
-      data: {
-        ...posts.data,
-        [post.id]: post,
-      },
-    }));
+    try {
+      const { data } = await api.createPost(form);
+      if (data.status === "success") {
+        const post = data.data.post;
+        setPosts((posts) => ({
+          ...posts,
+          data: {
+            ...posts.data,
+            [post.id]: post,
+          },
+        }));
+        return post;
+      }
+    } catch (err) {
+      return null;
+    }
   };
 
   const reactPost = async (postId) => {
@@ -112,6 +119,24 @@ export function Provider(props) {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const getSinglePost = async (postId) => {
+    const { data } = await api.getPost(postId);
+    if (data.status === "success") {
+      const post = data.data.post;
+
+      setPosts((posts) => ({
+        ...posts,
+        data: {
+          ...posts.data,
+          [post._id]: post,
+        },
+      }));
+      return post;
+    }
+
+    return null;
   };
 
   const addComment = (postId, content) => {
@@ -179,6 +204,7 @@ export function Provider(props) {
         reactPost,
         toggleNotification,
         posts,
+        getSinglePost,
       }}
     >
       {props.children}

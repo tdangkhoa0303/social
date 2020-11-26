@@ -4,12 +4,15 @@ import SwipeableViews from "react-swipeable-views";
 
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+import {
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  ViewCarousel,
+} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
-    backgroundColor: "wheat",
     width: "100%",
     paddingTop: "100%",
   },
@@ -17,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   controller: {
     position: "absolute",
     border: "none",
-    color: "#ffffff",
+    color: "rgba(50,50,50,0.7)",
     borderRadius: "50%",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     textAlign: "center",
@@ -61,9 +64,17 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
   },
 
-  image: {
-    height: "100%",
-    width: "auto",
+  image: (props) => ({
+    height: props.imageSize === "cover" ? "auto" : "100%",
+    width: props.imageSize === "cover" ? "100%" : "auto",
+  }),
+
+  multi: {
+    position: "absolute",
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+    color: "#ffffff",
+    zIndex: 100,
   },
 
   swipeableView: {
@@ -79,12 +90,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Carousel({ images = [] }) {
+function Carousel({ images = [], imageSize }) {
   useEffect(() => setActive(0), [images]);
 
   const [active, setActive] = useState(0);
 
-  const classes = useStyles();
+  const classes = useStyles({ imageSize });
 
   const handleUp = () =>
     setActive((prev) => (prev + 1 === images.length ? 0 : prev + 1));
@@ -94,6 +105,7 @@ function Carousel({ images = [] }) {
 
   return (
     <Box className={classes.root}>
+      {images.length > 1 && <ViewCarousel className={classes.multi} />}
       <SwipeableViews
         enableMouseEvents
         index={active}
