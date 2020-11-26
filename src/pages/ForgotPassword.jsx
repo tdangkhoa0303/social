@@ -1,27 +1,26 @@
 import React, { useState, useContext } from "react";
-import {
-  Grid,
-  TextField,
-  Link,
-  Button,
-  Typography,
-  Box,
-} from "@material-ui/core";
+import { Grid, TextField, Button, Typography, Box } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import Context from "../Context";
 
-import Background from "../assets/social_bg.svg";
+import Forgot from "../assets/forgot_password.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: { width: "100%", overflow: "hidden", height: "100vh" },
   section: {
     display: "flex",
-    justifyContent: " center",
+    justifyContent: "flex-start",
     flexDirection: "column",
+
+    [theme.breakpoints.up("md")]: {
+      justifyContent: "center",
+    },
   },
 
   hero: {
     width: "100%",
+    maxHeight: "50vh",
   },
 
   form: {
@@ -44,39 +43,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignIn() {
+function ForgotPassword() {
   const [email, setEmail] = useState({
     value: "",
     validated: true,
     validator: (value) => value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g),
   });
 
-  const { signIn } = useContext(Context);
-
-  const [password, setPassword] = useState({
-    value: "",
-    validated: true,
-  });
+  const [feedback, setFeedback] = useState({});
 
   const handleSubmitForm = (event) => {
     event.preventDefault();
-    signIn(email.value, password.value);
+    // Call forgot password api, return feedback
+    setFeedback({
+      status: "success",
+      message:
+        "Follow the instructions sent to your mail to get a new password",
+    });
   };
 
   const classes = useStyles();
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value.trim();
+    const validated = email.validator ? email.validator(value) : true;
+    setEmail((email) => ({ ...email, validated, value }));
+  };
 
   return (
     <Box>
       <Grid container spacing={3} className={classes.root}>
         <Grid item xs={12} md={6} className={classes.section}>
-          <img src={Background} alt="social" className={classes.hero} />
+          <img src={Forgot} alt="forgot password" className={classes.hero} />
         </Grid>
         <Grid item xs={12} md={6} className={classes.section}>
           <form className={classes.form} onSubmit={handleSubmitForm}>
             <Typography variant="h4" paragraph color="primary">
-              Sign in to share your stories to our community...
+              Enter your email...
             </Typography>
+
             <Grid container spacing={3}>
+              <Grid item xs={12}>
+                {feedback.message && (
+                  <Alert severity={feedback.status}>{feedback.message}</Alert>
+                )}
+              </Grid>
               <Grid item xs={12}>
                 <TextField
                   type="email"
@@ -85,35 +96,13 @@ function SignIn() {
                   variant="outlined"
                   className={classes.field}
                   value={email.value}
-                  onChange={(e) =>
-                    setEmail((email) => ({ ...email, value: e.target.value }))
-                  }
+                  onChange={handleEmailChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  type="password"
-                  id="password"
-                  label="Password"
-                  variant="outlined"
-                  className={classes.field}
-                  value={password.value}
-                  onChange={(e) =>
-                    setPassword((password) => ({
-                      ...password,
-                      value: e.target.value,
-                    }))
-                  }
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Link href="/whereismypassword">
-                  Forgot password? Follow me...
-                </Link>
-              </Grid>
+
               <Grid item xs={12}>
                 <Button variant="contained" color="primary" type="submit">
-                  Sign In
+                  Send mail
                 </Button>
               </Grid>
             </Grid>
@@ -124,4 +113,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default ForgotPassword;

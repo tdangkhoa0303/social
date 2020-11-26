@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useHistory } from "react-router";
 import clsx from "clsx";
 
@@ -55,8 +54,6 @@ function Notification({ item: { _id, path, author, status, action }, toggle }) {
     if (path) history.push(`/post/${path}`);
     else history.push(`/profile/${author.nickName || author._id}`);
   };
-
-  useEffect(() => console.log(status), [status]);
 
   return (
     <Box className={classes.item}>

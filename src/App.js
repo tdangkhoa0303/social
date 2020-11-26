@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import { PrivateRoute, PublicRoute } from "./templates";
-import { SignIn, Home, SignUp } from "./pages";
+import { SignIn, Home, SignUp, ForgotPassword } from "./pages";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 import { Provider } from "./Context";
@@ -38,6 +38,11 @@ function App() {
                 exact
                 path="/signUp"
                 component={() => <PublicRoute Component={SignUp} />}
+              />
+              <Route
+                exact
+                path="/whereismypassword"
+                component={() => <PublicRoute Component={ForgotPassword} />}
               />
               <Route
                 exact

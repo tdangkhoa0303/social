@@ -22,14 +22,15 @@ function PrivateRoute({ Component }) {
 
   return (
     <Fragment>
-      {/* {isAuth ? ( */}
-      <Box className={classes.root}>
-        <PublicAppBar />
-        <Component />
-      </Box>
-      {/* ) : (
-        <Redirect to="/" />
-      )} */}
+      {isAuth !== null &&
+        (isAuth ? (
+          <Redirect to="/" />
+        ) : (
+          <Box className={classes.root}>
+            <PublicAppBar />
+            <Component />
+          </Box>
+        ))}
     </Fragment>
   );
 }
