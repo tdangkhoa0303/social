@@ -1,17 +1,10 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import Context from "./Context";
 import {
   getConversationByMemberId,
   getConversationById,
-  getConversations,
   seenConversation,
 } from "../helpers/api";
 
@@ -19,28 +12,21 @@ const SocketContext = createContext();
 
 export const Socket = (props) => {
   const [online, setOnline] = useState([]);
-  const [conversations, setConversations] = useState([]);
   const [socket, setSocket] = useState(null);
-  const [current, setCurrent] = useState();
 
   const {
     auth: { isAuth, user },
+    conversations,
+    setConversations,
   } = useContext(Context);
-
-  const conversationsRef = useRef(null);
-
-  useEffect(() => {
-    conversationsRef.current = conversations;
-
-    !current &&
-      setCurrent(conversations.find((conversation) => conversation.seen));
-  }, [conversations]);
 
   useEffect(() => {
     let sk = null;
     if (isAuth) {
       const connect = async () => {
-        sk = await io(`${process.env.REACT_APP_SOCKET_URL}/messenger`);
+        sk = await io(`${process.env.REACT_APP_SOCKET_URL}/messenger`, {
+          transports: ["polling", "websocket"],
+        });
 
         sk.on("update", handleOnlineChange);
 
@@ -51,16 +37,9 @@ export const Socket = (props) => {
         });
 
         sk.emit("authenticate", { auth: user.token });
-        const {
-          data: {
-            data: { conversations },
-          },
-        } = await getConversations();
 
         setSocket(sk);
-        setConversations(conversations);
       };
-
       connect();
     }
     if (sk)
@@ -73,7 +52,7 @@ export const Socket = (props) => {
   const getConversation = async (id) => {
     const tmp = [user._id, id].sort().join("");
 
-    let conversation = conversations.find(
+    let conversation = Object.values(conversations).find(
       (conversation) =>
         conversation.members
           .map((member) => member._id)
@@ -85,38 +64,34 @@ export const Socket = (props) => {
 
     try {
       const {
-        data: { data },
+        data: { data: conversation },
       } = await getConversationByMemberId(id);
 
-      setConversations((conversations) => [
+      setConversations((conversations) => ({
         ...conversations,
-        data.conversation,
-      ]);
-      return data.conversation;
+        [conversation._id]: conversation,
+      }));
+      return conversation;
     } catch (err) {
       console.log(err);
     }
   };
 
   const toggleConversationStatus = async (conversationId, seen = true) => {
-    const index = conversations.findIndex(
-      (conversation) => conversation._id === conversationId
-    );
-
-    setConversations((conversations) => [
-      ...conversations.slice(0, index),
-      {
-        ...conversations[index],
+    setConversations((conversations) => ({
+      ...conversations,
+      [conversationId]: {
+        ...conversations[conversationId],
         seen,
       },
-      ...conversations.slice(index + 1, conversations.length),
-    ]);
+    }));
 
     await seenConversation(conversationId, seen);
   };
 
   const handleOnlineChange = (users) => {
     setOnline(users);
+    console.log(users);
   };
 
   const sendMessage = (conversationId, content) => {
@@ -127,18 +102,18 @@ export const Socket = (props) => {
         content,
       };
 
-      const index = conversations.findIndex((e) => e._id === conversationId);
+      setConversations((conversations) => {
+        let conversation = conversations[conversationId];
 
-      if (index < 0) return;
-      let conversation = conversations[index];
-      conversation.messages.push(message);
-      conversation.updatedAt = new Date().toISOString();
+        if (!conversation) return conversations;
 
-      setConversations((conversations) => [
-        ...conversations.slice(0, index),
-        conversation,
-        ...conversations.slice(index + 1, conversations.length),
-      ]);
+        conversation.messages.push(message);
+        conversation.updatedAt = new Date().toISOString();
+        return {
+          ...conversations,
+          [conversationId]: conversation,
+        };
+      });
 
       socket.emit("message", { conversationId, message });
     } catch (err) {
@@ -146,30 +121,29 @@ export const Socket = (props) => {
     }
   };
 
-  const recieveMessage = async ({ conversationId, message }) => {
-    const conversations = conversationsRef.current;
+  const recieveMessage = ({ conversationId, message }) => {
     try {
-      const index = conversations.findIndex((e) => {
-        return e._id === conversationId;
+      setConversations(async (conversations) => {
+        let conversation = conversations[conversationId];
+
+        if (!conversation) {
+          const conversation = await getConversationById(conversationId);
+          return {
+            ...conversations,
+            [conversationId]: conversation,
+          };
+        } else {
+          conversation.messages.push(message);
+          return {
+            ...conversations,
+            [conversationId]: {
+              ...conversation,
+              updatedAt: new Date().toISOString(),
+              seen: false,
+            },
+          };
+        }
       });
-
-      if (index < 0) {
-        const conversation = await getConversationById(conversationId);
-        setConversations((conversations) => [...conversations, conversation]);
-      } else {
-        let conversation = conversations[index];
-        conversation.messages.push(message);
-
-        setConversations((conversations) => [
-          ...conversations.slice(0, index),
-          {
-            ...conversation,
-            updatedAt: new Date().toISOString(),
-            seen: false,
-          },
-          ...conversations.slice(index + 1, conversations.length),
-        ]);
-      }
     } catch (err) {
       console.log(err);
     }
@@ -179,12 +153,9 @@ export const Socket = (props) => {
     <SocketContext.Provider
       value={{
         online,
-        conversations,
         getConversation,
         sendMessage,
         toggleConversationStatus,
-        current,
-        setCurrent,
       }}
     >
       {props.children}

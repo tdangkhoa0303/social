@@ -7,6 +7,8 @@ import {
   Typography,
   Box,
 } from "@material-ui/core";
+
+import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { Context } from "../contexts";
 
@@ -51,6 +53,8 @@ function SignIn() {
     validator: (value) => value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g),
   });
 
+  const [feedback, setFeedback] = useState({});
+
   const { signIn } = useContext(Context);
 
   const [password, setPassword] = useState({
@@ -60,7 +64,8 @@ function SignIn() {
 
   const handleSubmitForm = (event) => {
     event.preventDefault();
-    signIn(email.value, password.value);
+    const data = signIn(email.value, password.value);
+    if (!(data.status !== "success")) setFeedback(data);
   };
 
   const classes = useStyles();
@@ -76,6 +81,13 @@ function SignIn() {
             <Typography variant="h4" paragraph color="primary">
               Sign in to share your stories to our community...
             </Typography>
+            {feedback.message && (
+              <Box my={2}>
+                <Alert variant="filled" severity={feedback.status}>
+                  {feedback.message}
+                </Alert>
+              </Box>
+            )}
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField

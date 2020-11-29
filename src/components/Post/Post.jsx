@@ -121,7 +121,7 @@ function Post({
       const comment = comments[i];
       if (i === 3) {
         res.push(
-          <Box mt={1}>
+          <Box mt={1} key="readmore">
             <Link to={`/post/${_id}`} key={comment._id || comment.id}>
               <Typography variant="body1">
                 {`View all ${comments.length} ${
@@ -137,7 +137,7 @@ function Post({
 
       res.push(
         <Comment
-          key={comment.id || comment._id}
+          key={comment._id || comment.id}
           author={
             (user && user._id === comment.author._id) ||
             user._id === comment.author

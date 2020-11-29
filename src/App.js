@@ -5,11 +5,20 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import { PrivateRoute, PublicRoute } from "./templates";
-import { SignIn, Home, SignUp, ForgotPassword, Profile, Post } from "./pages";
+import { PrivateRoute, PublicRoute, PrivateFluid } from "./templates";
+import {
+  SignIn,
+  Home,
+  SignUp,
+  ForgotPassword,
+  Profile,
+  Post,
+  Messenger,
+} from "./pages";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 import { Provider } from "./contexts/Context";
+import { Socket } from "./contexts/Socket";
 
 const theme = createMuiTheme({
   palette: {
@@ -27,42 +36,48 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         <Provider>
-          <Router>
-            <Switch>
-              <Route
-                exact
-                path="/signIn"
-                component={() => <PublicRoute Component={SignIn} />}
-              />
-              <Route
-                exact
-                path="/signUp"
-                component={() => <PublicRoute Component={SignUp} />}
-              />
-              <Route
-                exact
-                path="/whereismypassword"
-                component={() => <PublicRoute Component={ForgotPassword} />}
-              />
-              <Route
-                exact
-                path="/profile/:q"
-                component={() => <PrivateRoute Component={Profile} />}
-              />
-
-              <Route
-                exact
-                path="/post/:id"
-                component={() => <PrivateRoute Component={Post} />}
-              />
-              <Route
-                exact
-                path="/"
-                component={() => <PrivateRoute Component={Home} />}
-              />
-              <Redirect to="signIn" />
-            </Switch>
-          </Router>
+          <Socket>
+            <Router>
+              <Switch>
+                <Route
+                  exact
+                  path="/signIn"
+                  component={() => <PublicRoute Component={SignIn} />}
+                />
+                <Route
+                  exact
+                  path="/signUp"
+                  component={() => <PublicRoute Component={SignUp} />}
+                />
+                <Route
+                  exact
+                  path="/whereismypassword"
+                  component={() => <PublicRoute Component={ForgotPassword} />}
+                />
+                <Route
+                  exact
+                  path="/profile/:q"
+                  component={() => <PrivateRoute Component={Profile} />}
+                />
+                <Route
+                  exact
+                  path="/messenger"
+                  component={() => <PrivateFluid Component={Messenger} />}
+                />
+                <Route
+                  exact
+                  path="/post/:id"
+                  component={() => <PrivateRoute Component={Post} />}
+                />
+                <Route
+                  exact
+                  path="/"
+                  component={() => <PrivateRoute Component={Home} />}
+                />
+                <Redirect to="signIn" />
+              </Switch>
+            </Router>
+          </Socket>
         </Provider>
       </ThemeProvider>
     </div>

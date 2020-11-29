@@ -12,7 +12,11 @@ import {
 
 import { Link } from "react-router-dom";
 import { makeStyles, fade } from "@material-ui/core/styles";
-import { Notifications as NotificationsIcon, Search } from "@material-ui/icons";
+import {
+  Message,
+  Notifications as NotificationsIcon,
+  Search,
+} from "@material-ui/icons";
 
 import { Context } from "../../contexts";
 
@@ -120,6 +124,14 @@ function Private() {
           </Box>
         </Box>
         <div className={classes.grow}></div>
+        <IconButton
+          component={Link}
+          aria-label="show new notifications"
+          color="inherit"
+          to="messenger"
+        >
+          <Message />
+        </IconButton>
         <IconButton aria-label="show new notifications" color="inherit">
           <Menu
             trigger={() => (

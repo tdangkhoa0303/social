@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { getCookie, setCookie } from "../helpers/cookieHelper";
 import * as api from "../helpers/api";
 
@@ -11,6 +11,8 @@ export function Provider(props) {
   const [auth, setAuth] = useState({ isAuth: null, user: null });
   const [notifications, setNotifications] = useState([]);
   const [posts, setPosts] = useState({ fetching: false, data: {} });
+  const [conversations, setConversations] = useState({});
+  const [current, setCurrent] = useState();
 
   useEffect(() => {
     const isLogin = getCookie("auth");
@@ -19,26 +21,38 @@ export function Provider(props) {
     } else setAuth({ isAuth: false, user: null });
   }, []);
 
+  useEffect(() => {
+    if (!current)
+      setCurrent(
+        Object.values(conversations).find((conversation) => conversation.seen)
+      );
+  }, [conversations]);
+
   const __setUser = (data) => {
-    const { user, refreshTTL, notifications: fetchedNotidications } = data;
+    const {
+      user,
+      refreshTTL,
+      notifications: fetchedNotidications,
+      conversations,
+    } = data;
     api.setToken(user.token);
     setCookie("auth", v4(), refreshTTL);
     setAuth({
       isAuth: true,
       user,
     });
-
+    setConversations(arrayToMap(conversations));
     setNotifications(fetchedNotidications);
   };
 
   const signIn = async (email, password) => {
     try {
-      const {
-        data: { data },
-      } = await api.requestLogin(email, password);
-      if (data) __setUser(data);
+      const { data } = await api.requestLogin(email, password);
+      if (data.status === "success") {
+        __setUser(data.data);
+      }
+      return data;
     } catch (err) {
-      console.log(err);
       setAuth({ isAuth: false, user: null });
     }
   };
@@ -205,6 +219,10 @@ export function Provider(props) {
         toggleNotification,
         posts,
         getSinglePost,
+        conversations,
+        setConversations,
+        current,
+        setCurrent,
       }}
     >
       {props.children}
