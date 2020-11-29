@@ -1,7 +1,7 @@
 import React, { useContext, Fragment } from "react";
 
 import { Redirect } from "react-router-dom";
-import Context from "../Context";
+import { Context } from "../contexts";
 
 import { PrivateAppBar } from "../components/AppBar";
 

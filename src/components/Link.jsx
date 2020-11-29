@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -20,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CustomLink({ children, ...props }) {
+function CustomLink({ children, className, ...props }) {
   const classes = useStyles();
   return (
-    <Link {...props} className={classes.link}>
+    <Link {...props} className={clsx([classes.link, className])}>
       {children}
     </Link>
   );

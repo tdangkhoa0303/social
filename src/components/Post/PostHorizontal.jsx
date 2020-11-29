@@ -3,10 +3,6 @@ import moment from "moment";
 
 import { Link } from "../";
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardActions,
   Typography,
   IconButton,
   Box,
@@ -30,7 +26,7 @@ import {
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Context from "../../Context";
+import { Context } from "../../contexts";
 import Carousel from "../Carousel";
 import { Comment } from "../";
 

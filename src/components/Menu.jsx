@@ -2,8 +2,6 @@ import { useState, Fragment } from "react";
 
 import { Menu, Box } from "@material-ui/core";
 
-import { makeStyles } from "@material-ui/styles";
-
 function CustomMenu({ trigger: MenuTrigger, children, ...props }) {
   const [anchorEl, setAnchorEl] = useState(null);
 

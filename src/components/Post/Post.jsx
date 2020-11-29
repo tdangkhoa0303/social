@@ -29,7 +29,7 @@ import {
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Context from "../../Context";
+import { Context } from "../../contexts";
 import Carousel from "../Carousel";
 import { Comment } from "../";
 
@@ -54,6 +54,15 @@ const useStyles = makeStyles((theme) => ({
       display: "block",
     },
   },
+  action: {
+    display: "none",
+    alignItems: "center",
+    width: "100%",
+
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
+    },
+  },
 
   react: {
     "&:hover": {
@@ -63,6 +72,12 @@ const useStyles = makeStyles((theme) => ({
 
   reacted: {
     color: "#e53935",
+  },
+
+  viewComment: {
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
   },
 }));
 
@@ -98,6 +113,42 @@ function Post({
 
   const handleReactPost = (event) => {
     reactPost(_id);
+  };
+
+  const renderComments = (comments) => {
+    let res = [];
+    for (let i = 0; i < comments.length; i++) {
+      const comment = comments[i];
+      if (i === 3) {
+        res.push(
+          <Box mt={1}>
+            <Link to={`/post/${_id}`} key={comment._id || comment.id}>
+              <Typography variant="body1">
+                {`View all ${comments.length} ${
+                  comments.length > 1 ? "comments" : "comment"
+                }`}
+              </Typography>
+            </Link>
+          </Box>
+        );
+
+        break;
+      }
+
+      res.push(
+        <Comment
+          key={comment.id || comment._id}
+          author={
+            (user && user._id === comment.author._id) ||
+            user._id === comment.author
+              ? "You"
+              : comment.author.nickName
+          }
+          content={comment.content}
+        />
+      );
+    }
+    return res;
   };
 
   const handleInputComment = (event) => setComment(event.target.value);
@@ -181,31 +232,29 @@ function Post({
           </IconButton>
         </Box>
         <Comment author={author.nickName} content={caption} />
-        <Box className={classes.comments}>
-          {comments.map((comment) => (
-            <Comment
-              key={comment.id || comment._id}
-              author={
-                (user && user._id === comment.author._id) ||
-                user._id === comment.author
-                  ? "You"
-                  : comment.author.nickName
-              }
-              content={comment.content}
-            />
-          ))}
-        </Box>
+        <Box className={classes.comments}>{renderComments(comments)}</Box>
+        {comments.length > 0 && (
+          <Link to={`/post/${_id}`} className={classes.viewComment}>
+            <Typography variant="body1">
+              {`View all ${comments.length} ${
+                comments.length > 1 ? "comments" : "comment"
+              }`}
+            </Typography>
+          </Link>
+        )}
       </CardContent>
       <CardActions>
-        <InputBase
-          placeholder="Add comment..."
-          className={classes.input}
-          value={comment}
-          onChange={handleInputComment}
-        />
-        <Button color="primary" onClick={handleAddComment}>
-          Post
-        </Button>
+        <Box className={classes.action} display="flex">
+          <InputBase
+            placeholder="Add comment..."
+            className={classes.input}
+            value={comment}
+            onChange={handleInputComment}
+          />
+          <Button color="primary" onClick={handleAddComment}>
+            Post
+          </Button>
+        </Box>
       </CardActions>
     </Card>
   );

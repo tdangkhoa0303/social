@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import { Notifications as NotificationsIcon, Search } from "@material-ui/icons";
 
-import Context from "../../Context";
+import { Context } from "../../contexts";
 
 import Logo from "../../assets/logo.svg";
 import { Menu, Notifications } from "../";

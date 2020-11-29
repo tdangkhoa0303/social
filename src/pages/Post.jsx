@@ -5,8 +5,7 @@ import { Redirect } from "react-router-dom";
 import { Container, Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { PostHorizontal } from "../components/Post";
-import Context from "../Context";
-import { Post } from "../components/Post";
+import { Context } from "../contexts";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {

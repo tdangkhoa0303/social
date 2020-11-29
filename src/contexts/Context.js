@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getCookie, setCookie } from "./helpers/cookieHelper";
-import * as api from "./helpers/api";
+import { getCookie, setCookie } from "../helpers/cookieHelper";
+import * as api from "../helpers/api";
 
 import { v4 } from "uuid";
-import { arrayToMap } from "./helpers/data.util";
+import { arrayToMap } from "../helpers/data.util";
 
 const Context = React.createContext();
 

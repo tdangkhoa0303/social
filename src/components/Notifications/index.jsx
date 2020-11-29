@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { List, ListItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Context from "../../Context";
+import { Context } from "../../contexts";
 
 import Notification from "./Notification";
 

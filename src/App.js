@@ -9,7 +9,7 @@ import { PrivateRoute, PublicRoute } from "./templates";
 import { SignIn, Home, SignUp, ForgotPassword, Profile, Post } from "./pages";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
-import { Provider } from "./Context";
+import { Provider } from "./contexts/Context";
 
 const theme = createMuiTheme({
   palette: {

@@ -1,10 +1,10 @@
 import { useContext, useEffect } from "react";
 
-import { Grid, CircularProgress } from "@material-ui/core";
+import { Grid, CircularProgress, Box } from "@material-ui/core";
 import { CreatePost } from "../components";
-import { Post, PostHorizontal } from "../components/Post";
+import { Post } from "../components/Post";
 
-import Context from "../Context";
+import { Context } from "../contexts";
 
 function Home() {
   const {
@@ -35,7 +35,9 @@ function Home() {
           </Grid>
 
           {posts.fetching ? (
-            <CircularProgress />
+            <Box p={2}>
+              <CircularProgress />
+            </Box>
           ) : (
             renderPosts(Object.values(posts.data))
           )}

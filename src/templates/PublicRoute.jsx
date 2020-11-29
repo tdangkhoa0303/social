@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from "react";
 import { PublicAppBar } from "../components/AppBar";
 
-import Context from "../Context";
+import { Context } from "../contexts";
 
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";

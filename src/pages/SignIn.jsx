@@ -8,7 +8,7 @@ import {
   Box,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Context from "../Context";
+import { Context } from "../contexts";
 
 import Background from "../assets/social_bg.svg";
 

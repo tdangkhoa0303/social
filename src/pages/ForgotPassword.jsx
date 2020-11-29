@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Grid, TextField, Button, Typography, Box } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
-import Context from "../Context";
 
 import Forgot from "../assets/forgot_password.svg";
 
