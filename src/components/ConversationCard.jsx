@@ -70,7 +70,6 @@ const Card = ({ conversation }) => {
           <Typography
             variant="body2"
             css={{
-              fontSize: "1.5rem",
               fontWeight: seen ? "400" : "500",
               lineHeight: "",
               maxHeight: "2.25rem",

@@ -22,31 +22,28 @@ export const Socket = (props) => {
 
   useEffect(() => {
     let sk = null;
+    const connect = async () => {
+      sk = await io(`${process.env.REACT_APP_SOCKET_URL}/messenger`);
+
+      sk.on("update", handleOnlineChange);
+
+      sk.on("message", recieveMessage);
+
+      sk.on("error", (error) => {
+        console.log(error);
+      });
+
+      sk.emit("authenticate", { auth: user.token });
+
+      setSocket(sk);
+    };
     if (isAuth) {
-      const connect = async () => {
-        sk = await io(`${process.env.REACT_APP_SOCKET_URL}/messenger`, {
-          transports: ["polling", "websocket"],
-        });
-
-        sk.on("update", handleOnlineChange);
-
-        sk.on("message", recieveMessage);
-
-        sk.on("error", (error) => {
-          console.log(error);
-        });
-
-        sk.emit("authenticate", { auth: user.token });
-
-        setSocket(sk);
-      };
       connect();
+      // return () => {
+      //   sk.off("update", handleOnlineChange);
+      //   sk.off("message", recieveMessage);
+      // };
     }
-    if (sk)
-      return () => {
-        sk.off("update", handleOnlineChange);
-        sk.off("message", recieveMessage);
-      };
   }, [isAuth]);
 
   const getConversation = async (id) => {

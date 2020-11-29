@@ -34,9 +34,9 @@ const theme = createMuiTheme({
 function App() {
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
-        <Provider>
-          <Socket>
+      <Provider>
+        <Socket>
+          <ThemeProvider theme={theme}>
             <Router>
               <Switch>
                 <Route
@@ -77,9 +77,9 @@ function App() {
                 <Redirect to="signIn" />
               </Switch>
             </Router>
-          </Socket>
-        </Provider>
-      </ThemeProvider>
+          </ThemeProvider>
+        </Socket>
+      </Provider>
     </div>
   );
 }

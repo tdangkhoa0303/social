@@ -57,7 +57,8 @@ function Sider({ online, handleAvatarClick, conversations, isShow }) {
         width: "40rem",
         overflow: "auto",
         height: "100%",
-        backgroundColor: "#ffffff",
+        background: "#ffffff",
+        zIndex: 4,
         boxSizing: "border-box",
         padding: "2rem 1rem",
 
@@ -91,15 +92,25 @@ function Sider({ online, handleAvatarClick, conversations, isShow }) {
       </Box>
       <Typography variant="h6">Online</Typography>
       <Box>
-        <List style={{ marginBottom: "2rem" }} direction="horizontal">
+        <List css={{ marginBottom: "2rem" }} direction="horizontal">
           {online &&
             Object.values(online).map((e) => (
-              <ListItem key={e._id}>
+              <ListItem
+                key={e._id}
+                css={{
+                  padding: "0",
+                  display: "inline-flex",
+                  width: "fit-content",
+                }}
+              >
                 <Avatar
                   src={e.avatar.url}
-                  size="7rem"
                   onClick={(event) => handleAvatarClick(e._id)}
-                  style={{ marginRight: "1rem" }}
+                  css={{
+                    height: "5rem !important",
+                    width: "5rem !important",
+                    marginRight: "1rem",
+                  }}
                 />
               </ListItem>
             ))}

@@ -6,6 +6,7 @@ import {
   Button,
   Typography,
   Box,
+  CircularProgress,
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
@@ -54,6 +55,7 @@ function SignIn() {
   });
 
   const [feedback, setFeedback] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const { signIn } = useContext(Context);
 
@@ -62,9 +64,11 @@ function SignIn() {
     validated: true,
   });
 
-  const handleSubmitForm = (event) => {
+  const handleSubmitForm = async (event) => {
     event.preventDefault();
-    const data = signIn(email.value, password.value);
+    setLoading(true);
+    const data = await signIn(email.value, password.value);
+    setLoading(false);
     if (!(data.status !== "success")) setFeedback(data);
   };
 
@@ -81,6 +85,7 @@ function SignIn() {
             <Typography variant="h4" paragraph color="primary">
               Sign in to share your stories to our community...
             </Typography>
+            {loading && <CircularProgress />}
             {feedback.message && (
               <Box my={2}>
                 <Alert variant="filled" severity={feedback.status}>
@@ -124,7 +129,12 @@ function SignIn() {
                 </Link>
               </Grid>
               <Grid item xs={12}>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={loading}
+                >
                   Sign In
                 </Button>
               </Grid>
