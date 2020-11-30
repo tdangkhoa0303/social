@@ -93,6 +93,7 @@ export function Provider(props) {
   const createPost = async (caption, images) => {
     let form = new FormData();
     form.append("caption", caption);
+    form.append("id", v4());
     for (let i = 0; i < images.length; i++) form.append("images", images[i]);
 
     try {
