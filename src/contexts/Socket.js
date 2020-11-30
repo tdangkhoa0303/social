@@ -62,9 +62,11 @@ export const Socket = (props) => {
 
     try {
       const {
-        data: { data: conversation },
+        data: {
+          data: { conversation },
+        },
       } = await api.getConversationByMemberId(id);
-
+      console.log(conversation);
       setConversations((conversations) => ({
         ...conversations,
         [conversation._id]: conversation,
