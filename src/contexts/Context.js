@@ -9,7 +9,7 @@ const Context = React.createContext();
 
 export function Provider(props) {
   const [auth, setAuth] = useState({ isAuth: null, user: null });
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState({});
   const [posts, setPosts] = useState({ fetching: false, data: {} });
   const [conversations, setConversations] = useState({});
   const [current, setCurrent] = useState();
@@ -42,7 +42,7 @@ export function Provider(props) {
       user,
     });
     setConversations(arrayToMap(conversations));
-    setNotifications(fetchedNotidications);
+    setNotifications(arrayToMap(fetchedNotidications));
   };
 
   const signIn = async (email, password) => {
@@ -54,6 +54,7 @@ export function Provider(props) {
       return data;
     } catch (err) {
       setAuth({ isAuth: false, user: null });
+      return err;
     }
   };
 
@@ -185,19 +186,17 @@ export function Provider(props) {
   const toggleNotification = async (id, status) => {
     try {
       setNotifications((notifications) => {
-        const index = notifications.findIndex((e) => e._id === id);
+        const notification = notifications[id];
 
-        if (index < 0) return notifications;
+        if (!notification) return notifications;
 
-        let notification = notifications[index];
-        return [
-          ...notifications.slice(0, index),
-          {
+        return {
+          ...notifications,
+          [id]: {
             ...notification,
             status: status !== undefined ? status : !notification.status,
           },
-          ...notifications.slice(index + 1),
-        ];
+        };
       });
       await api.toggleNotificationStatus(id, status);
     } catch (err) {
@@ -223,6 +222,7 @@ export function Provider(props) {
         setConversations,
         current,
         setCurrent,
+        setNotifications,
       }}
     >
       {props.children}

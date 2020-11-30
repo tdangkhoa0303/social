@@ -19,15 +19,17 @@ function Notifications({ data }) {
 
   return (
     <List>
-      {data.map((item) => (
-        <ListItem
-          alignItems="flex-start"
-          key={item._id}
-          className={classes.item}
-        >
-          <Notification item={item} toggle={toggleNotification} />
-        </ListItem>
-      ))}
+      {Object.values(data)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .map((item) => (
+          <ListItem
+            alignItems="flex-start"
+            key={item._id}
+            className={classes.item}
+          >
+            <Notification item={item} toggle={toggleNotification} />
+          </ListItem>
+        ))}
     </List>
   );
 }

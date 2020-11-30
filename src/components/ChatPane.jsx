@@ -106,6 +106,7 @@ const ChatPane = ({ conversation, sendMessage }) => {
               boxShadow: "0 4px 16px rgba(50, 50, 50, 0.1)",
             }}
             onSubmit={handleOnSubmitMessage}
+            autoComplete="off"
           >
             <InputBase
               type="text"

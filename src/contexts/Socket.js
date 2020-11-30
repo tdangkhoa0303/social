@@ -2,11 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import Context from "./Context";
-import {
-  getConversationByMemberId,
-  getConversationById,
-  seenConversation,
-} from "../helpers/api";
+import * as api from "../helpers/api";
 
 const SocketContext = createContext();
 
@@ -17,6 +13,7 @@ export const Socket = (props) => {
   const {
     auth: { isAuth, user },
     conversations,
+    setNotifications,
     setConversations,
   } = useContext(Context);
 
@@ -29,6 +26,8 @@ export const Socket = (props) => {
 
       sk.on("message", recieveMessage);
 
+      sk.on("notify", notify);
+
       sk.on("error", (error) => {
         console.log(error);
       });
@@ -39,10 +38,12 @@ export const Socket = (props) => {
     };
     if (isAuth) {
       connect();
-      // return () => {
-      //   sk.off("update", handleOnlineChange);
-      //   sk.off("message", recieveMessage);
-      // };
+      return () => {
+        // sk.removeAllListeners();
+        sk.off("update", handleOnlineChange);
+        sk.off("message", recieveMessage);
+        sk.off("notify", notify);
+      };
     }
   }, [isAuth]);
 
@@ -62,7 +63,7 @@ export const Socket = (props) => {
     try {
       const {
         data: { data: conversation },
-      } = await getConversationByMemberId(id);
+      } = await api.getConversationByMemberId(id);
 
       setConversations((conversations) => ({
         ...conversations,
@@ -83,12 +84,18 @@ export const Socket = (props) => {
       },
     }));
 
-    await seenConversation(conversationId, seen);
+    await api.seenConversation(conversationId, seen);
   };
 
   const handleOnlineChange = (users) => {
     setOnline(users);
-    console.log(users);
+  };
+
+  const notify = (notification) => {
+    setNotifications((notifications) => ({
+      ...notifications,
+      [notification._id]: notification,
+    }));
   };
 
   const sendMessage = (conversationId, content) => {
@@ -118,19 +125,27 @@ export const Socket = (props) => {
     }
   };
 
+  const getConversationById = async (id) => {
+    const { data } = await api.getConversationById(id);
+    if (data.status === "success") {
+      return {
+        ...conversations,
+        [id]: data.data.conversation,
+      };
+    }
+  };
+
   const recieveMessage = ({ conversationId, message }) => {
     try {
-      setConversations(async (conversations) => {
+      setConversations((conversations) => {
         let conversation = conversations[conversationId];
 
         if (!conversation) {
-          const conversation = await getConversationById(conversationId);
-          return {
-            ...conversations,
-            [conversationId]: conversation,
-          };
+          getConversationById(conversationId);
+          return conversations;
         } else {
           conversation.messages.push(message);
+
           return {
             ...conversations,
             [conversationId]: {

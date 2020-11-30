@@ -55,7 +55,7 @@ const Messages = ({ messages, member }) => {
           <Typography
             variant="body1"
             className={classes.message}
-            key={message.id}
+            key={message._id || message.id}
           >
             {message.content}
           </Typography>

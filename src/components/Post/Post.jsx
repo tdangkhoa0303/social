@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import moment from "moment";
 
-import { Link } from "../";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -74,7 +74,13 @@ const useStyles = makeStyles((theme) => ({
     color: "#e53935",
   },
 
-  viewComment: {
+  dkOnly: {
+    [theme.breakpoints.down("md")]: {
+      display: "none",
+    },
+  },
+
+  mbOnly: {
     [theme.breakpoints.up("md")]: {
       display: "none",
     },
@@ -95,6 +101,7 @@ function Post({
   const classes = useStyles();
 
   const [anchorEle, setAnchorEle] = useState(null);
+  const commentRef = useRef(null);
 
   const handleClose = (event) => setAnchorEle(null);
 
@@ -152,6 +159,7 @@ function Post({
   };
 
   const handleInputComment = (event) => setComment(event.target.value);
+  const handleCommentClick = (event) => commentRef && commentRef.focus();
 
   return (
     <Card className={classes.card}>
@@ -162,10 +170,11 @@ function Post({
           </Link>
         }
         title={
-          <Typography>
-            <Link to={`/profile/${author.nickName || author._id}`}>
-              <b>{author.nickName}</b>
-            </Link>
+          <Typography
+            component={Link}
+            to={`/profile/${author.nickName || author._id}`}
+          >
+            <b>{author.nickName}</b>
           </Typography>
         }
         subheader={`${moment(createdAt).toNow(true)} ago`}
@@ -212,8 +221,9 @@ function Post({
       <Carousel images={images} />
 
       <CardContent className={classes.content}>
-        <Box>
+        <Box css={{ color: "rgba(0, 0, 0, 0.8)" }}>
           <IconButton
+            color="inherit"
             edge="start"
             className={classes.react}
             onClick={handleReactPost}
@@ -224,17 +234,35 @@ function Post({
               <FavoriteBorder />
             )}
           </IconButton>
-          <IconButton>
+          <IconButton
+            color="inherit"
+            onClick={handleCommentClick}
+            className={classes.dkOnly}
+          >
             <Forum />
           </IconButton>
-          <IconButton>
+          <IconButton
+            color="inherit"
+            component={Link}
+            to={`/post/${_id}`}
+            className={classes.mbOnly}
+          >
+            <Forum />
+          </IconButton>
+          <IconButton color="inherit">
             <Send />
           </IconButton>
         </Box>
+        {likes.length > 0 && (
+          <Typography variant="body2">
+            {`${likes.length} ${likes.length > 1 ? "likes" : "like"}`}
+          </Typography>
+        )}
         <Comment author={author.nickName} content={caption} />
+
         <Box className={classes.comments}>{renderComments(comments)}</Box>
         {comments.length > 0 && (
-          <Link to={`/post/${_id}`} className={classes.viewComment}>
+          <Link to={`/post/${_id}`} className={classes.mbOnly}>
             <Typography variant="body1">
               {`View all ${comments.length} ${
                 comments.length > 1 ? "comments" : "comment"
@@ -246,6 +274,7 @@ function Post({
       <CardActions>
         <Box className={classes.action} display="flex">
           <InputBase
+            ref={commentRef}
             placeholder="Add comment..."
             className={classes.input}
             value={comment}

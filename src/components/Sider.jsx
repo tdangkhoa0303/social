@@ -16,7 +16,11 @@ import {
   Box,
   Typography,
   CircularProgress,
+  IconButton,
 } from "@material-ui/core";
+import { Home } from "@material-ui/icons";
+
+import { Link } from "react-router-dom";
 
 function Sider({ online, handleAvatarClick, conversations, isShow }) {
   const [search, setSearch] = useState();
@@ -74,7 +78,15 @@ function Sider({ online, handleAvatarClick, conversations, isShow }) {
         },
       }}
     >
-      <Typography variant="h4">Chat</Typography>
+      <Box display="flex" alignItems="center">
+        <Typography variant="h4" css={{ marginRight: "1rem" }}>
+          Chat
+        </Typography>
+        <IconButton component={Link} to="/" color="inherit">
+          <Home />
+        </IconButton>
+      </Box>
+
       <Box my={2}>
         <InputBase
           type="text"
@@ -91,31 +103,30 @@ function Sider({ online, handleAvatarClick, conversations, isShow }) {
         />
       </Box>
       <Typography variant="h6">Online</Typography>
-      <Box>
-        <List css={{ marginBottom: "2rem" }} direction="horizontal">
-          {online &&
-            Object.values(online).map((e) => (
-              <ListItem
-                key={e._id}
+
+      <List css={{ marginBottom: "2rem", display: "flex" }}>
+        {online &&
+          Object.values(online).map((e) => (
+            <ListItem
+              key={e._id}
+              css={{
+                padding: "0 !important",
+                width: "fit-content !important",
+              }}
+            >
+              <Avatar
+                src={e.avatar.url}
+                onClick={(event) => handleAvatarClick(e._id)}
                 css={{
-                  padding: "0",
-                  display: "inline-flex",
-                  width: "fit-content",
+                  height: "5rem !important",
+                  width: "5rem !important",
+                  marginRight: "1rem",
                 }}
-              >
-                <Avatar
-                  src={e.avatar.url}
-                  onClick={(event) => handleAvatarClick(e._id)}
-                  css={{
-                    height: "5rem !important",
-                    width: "5rem !important",
-                    marginRight: "1rem",
-                  }}
-                />
-              </ListItem>
-            ))}
-        </List>
-      </Box>
+              />
+            </ListItem>
+          ))}
+      </List>
+
       {search ? (
         <Fragment>
           <Typography variant="h6">Find contact</Typography>

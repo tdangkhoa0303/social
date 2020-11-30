@@ -68,6 +68,7 @@ function SignIn() {
     event.preventDefault();
     setLoading(true);
     const data = await signIn(email.value, password.value);
+    console.log(data);
     setLoading(false);
     if (!(data.status !== "success")) setFeedback(data);
   };

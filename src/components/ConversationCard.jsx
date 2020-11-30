@@ -35,9 +35,9 @@ const Card = ({ conversation }) => {
       css={{
         cursor: "pointer",
         backgroundColor: current && current._id === _id ? "#f9f9f9" : "#ffffff",
-        borderRadius: "0.5rem",
+        borderRadius: "1rem",
         boxSizing: "border-box",
-        padding: "0.5rem",
+        padding: "0.5rem 1rem",
       }}
       onClick={handleConversationClick}
     >

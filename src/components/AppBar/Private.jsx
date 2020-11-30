@@ -98,6 +98,7 @@ function Private() {
   const {
     auth: { user },
     notifications,
+    conversations,
   } = useContext(Context);
 
   const classes = useStyles();
@@ -123,14 +124,22 @@ function Private() {
             />
           </Box>
         </Box>
-        <div className={classes.grow}></div>
+        <div className={classes.grow}></div>{" "}
         <IconButton
           component={Link}
           aria-label="show new notifications"
           color="inherit"
           to="messenger"
         >
-          <Message />
+          <Badge
+            badgeContent={
+              conversations &&
+              Object.values(conversations).filter((item) => !item.seen).length
+            }
+            color="secondary"
+          >
+            <Message />
+          </Badge>
         </IconButton>
         <IconButton aria-label="show new notifications" color="inherit">
           <Menu
@@ -138,7 +147,8 @@ function Private() {
               <Badge
                 badgeContent={
                   notifications &&
-                  notifications.filter((item) => !item.status).length
+                  Object.values(notifications).filter((item) => !item.status)
+                    .length
                 }
                 color="secondary"
               >
