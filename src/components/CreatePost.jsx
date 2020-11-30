@@ -63,6 +63,7 @@ function CreatePost() {
   const [previews, setPreviews] = useState([]);
 
   const [feedback, setFeedback] = useState({
+    loading: false,
     status: "",
     message: "",
   });
@@ -89,15 +90,17 @@ function CreatePost() {
 
   const handleCreatePost = (event) => {
     const post = createPost(caption, images);
+    setFeedback((feedback) => ({ ...feedback, loading: true }));
     if (!post) {
       setFeedback((feedback) => ({
         ...feedback,
+        loading: false,
         status: "error",
         message: "Something went wrong. Let's try again...",
       }));
       return;
     }
-
+    setFeedback((feedback) => ({ ...feedback, loading: false }));
     setPreviews([]);
     setCaption("");
   };
@@ -150,6 +153,7 @@ function CreatePost() {
           size="small"
           color="primary"
           onClick={handleCreatePost}
+          disabled={feedback.loading}
         >
           Share
         </Button>

@@ -54,6 +54,7 @@ export function Provider(props) {
       return data;
     } catch (err) {
       setAuth({ isAuth: false, user: null });
+      console.log(err);
       return err;
     }
   };
@@ -98,11 +99,12 @@ export function Provider(props) {
       const { data } = await api.createPost(form);
       if (data.status === "success") {
         const post = data.data.post;
+        console.log(post);
         setPosts((posts) => ({
           ...posts,
           data: {
             ...posts.data,
-            [post.id]: post,
+            [post._id]: post,
           },
         }));
         return post;
