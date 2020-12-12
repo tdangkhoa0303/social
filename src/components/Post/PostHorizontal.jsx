@@ -199,7 +199,7 @@ function Horizontal({
             <Link to={`/profile/${author.nickName || author._id}`}>
               <Avatar
                 aria-label="user avatar"
-                src={author.avatar.url}
+                src={author.avatar && author.avatar.url}
                 className={classes.avatar}
               />
             </Link>

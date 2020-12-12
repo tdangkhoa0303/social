@@ -22,7 +22,10 @@ const Card = ({ contact, handleContactClick }) => {
 
   return (
     <Box display="flex" className={classes.root} onClick={handleContactClick}>
-      <Avatar src={contact.avatar.url} className={classes.avatar} />
+      <Avatar
+        src={contact.avatar && contact.avatar.url}
+        className={classes.avatar}
+      />
       <Typography variant="subtitle1">{contact.fullName}</Typography>
     </Box>
   );

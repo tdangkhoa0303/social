@@ -166,7 +166,10 @@ function Post({
       <CardHeader
         avatar={
           <Link to={`/profile/${author.nickName || author._id}`}>
-            <Avatar aria-label="user avatar" src={author.avatar.url} />
+            <Avatar
+              aria-label="user avatar"
+              src={author.avatar && author.avatar.url}
+            />
           </Link>
         }
         title={

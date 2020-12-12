@@ -74,7 +74,10 @@ const ChatPane = ({ conversation, sendMessage }) => {
               boxShadow: "0 4px 16px rgba(50, 50, 50, 0.1)",
             }}
           >
-            <Avatar src={member.avatar.url} css={{ marginRight: "1rem" }} />
+            <Avatar
+              src={member.avatar && member.avatar.url}
+              css={{ marginRight: "1rem" }}
+            />
             <Typography variant="h6" css={{ fontWeight: "400" }}>
               {conversationName}
             </Typography>

@@ -115,7 +115,7 @@ function Sider({ online, handleAvatarClick, conversations, isShow }) {
               }}
             >
               <Avatar
-                src={e.avatar.url}
+                src={e.avatar && e.avatar.url}
                 onClick={(event) => handleAvatarClick(e._id)}
                 css={{
                   height: "5rem !important",

@@ -42,7 +42,7 @@ const Card = ({ conversation }) => {
       onClick={handleConversationClick}
     >
       <Avatar
-        src={member.avatar.url}
+        src={member.avatar && member.avatar.url}
         css={{
           height: "3.5rem !important",
           width: "3.5rem !important",

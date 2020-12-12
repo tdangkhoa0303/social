@@ -159,7 +159,10 @@ function Private() {
             <Notifications data={notifications} />
           </Menu>
         </IconButton>
-        <Avatar src={user && user.avatar.url} className={classes.avatar} />
+        <Avatar
+          src={user.avatar && user.avatar.url}
+          className={classes.avatar}
+        />
       </Toolbar>
     </AppBar>
   );
