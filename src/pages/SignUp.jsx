@@ -229,9 +229,7 @@ function SignUp() {
       );
       form.append("avatar", avatar);
 
-      const {
-        data: { data: response },
-      } = await api.requestSignUp(form);
+      const { data: response } = await api.requestSignUp(form);
       console.log(response);
       if (response.success === "success") history.push("/signIn");
     } catch (err) {
