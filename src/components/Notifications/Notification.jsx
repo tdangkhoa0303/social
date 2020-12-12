@@ -63,7 +63,7 @@ function Notification({ item: { _id, path, author, status, action }, toggle }) {
       >
         <Avatar
           alt="user avartar"
-          src={author.avatar.url}
+          src={author.avatar && author.avatar.url}
           className={classes.avatar}
         />
         <Typography variant="body1" component="p" noWrap>

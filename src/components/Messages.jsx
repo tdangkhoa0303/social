@@ -35,7 +35,12 @@ const Messages = ({ messages, member }) => {
         padding: "1rem 0",
       }}
     >
-      {!isMine && <Avatar src={member.avatar.url} className={classes.avatar} />}
+      {!isMine && (
+        <Avatar
+          src={member.avatar && member.avatar.url}
+          className={classes.avatar}
+        />
+      )}
       <Box
         display="flex"
         css={{

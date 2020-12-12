@@ -296,9 +296,9 @@ function SignUp() {
           {getActiveContent(activeStep)}
           <Box className={classes.action}>
             <Button
-              disabled={activeStep === 0}
               onClick={handleBack}
               className={classes.backButton}
+              hidden={activeStep === 0}
             >
               Back
             </Button>
