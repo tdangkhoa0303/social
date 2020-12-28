@@ -51,7 +51,7 @@ function Profile() {
               <Grid item xs={12} lg={4} md={8}>
                 <Box display="flex" mb={8}>
                   <Avatar
-                    src={profile.avatar.url}
+                    src={profile.avatar && profile.avatar.url}
                     alt="user avatar"
                     className={classes.avatar}
                   />

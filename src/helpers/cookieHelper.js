@@ -9,8 +9,7 @@ export const getCookie = (key) => {
 };
 
 export const setCookie = (key, value, ttl) => {
-  let time = new Date();
-  time.setDate(time.getTime() + ttl);
+  let time = new Date(new Date().getTime() + ttl);
   const expires = time ? `expires=${time.toUTCString()}` : "";
   document.cookie = `${key}=${value};${expires};path="/"`;
 };
