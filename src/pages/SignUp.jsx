@@ -13,7 +13,9 @@ import {
   Step,
   StepLabel,
   Avatar,
+  CircularProgress,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { deepOrange } from "@material-ui/core/colors";
 
@@ -73,7 +75,10 @@ function SignUp() {
   const history = useHistory();
   const passwordRef = useRef();
   const [activeStep, setActiveStep] = useState(0);
-  const [error, setError] = useState("");
+  const [feedback, setFeedback] = useState({
+    loading: false,
+    message: "",
+  });
 
   const [fields, setFields] = useState({
     firstName: {
@@ -209,11 +214,19 @@ function SignUp() {
             />
           </Box>
         );
-      case 3:
+      case 2:
         return (
-          <Typography className={classes.instructions}>
-            We prepared all the things for you!
-          </Typography>
+          <Box>
+            <Typography className={classes.instructions}>
+              We prepared all the things for you!
+            </Typography>
+            {feedback.message && (
+              <Alert variant="filled" severity="error">
+                {feedback.message}
+              </Alert>
+            )}
+            {feedback.loading && <CircularProgress />}
+          </Box>
         );
       default:
         return;
@@ -228,12 +241,16 @@ function SignUp() {
         form.append(field.name, field.value)
       );
       form.append("avatar", avatar);
-
+      setFeedback((feedback) => ({ ...feedback, loading: true }));
       const { data: response } = await api.requestSignUp(form);
-      console.log(response);
-      if (response.success === "success") history.push("/signIn");
+      setFeedback((feedback) => ({ ...feedback, loading: false }));
+      if (response.status === "success") history.push("/signIn");
     } catch (err) {
-      setError(err.message);
+      setFeedback((feedback) => ({
+        ...feedback,
+        loading: false,
+        message: err.message,
+      }));
     }
   };
 
